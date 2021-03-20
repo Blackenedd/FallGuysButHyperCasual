@@ -15,20 +15,28 @@ public class PlayerController : MonoBehaviour
     private Rigidbody mRigidbody;
 
     private List<Rigidbody> ragdollRB = new List<Rigidbody>();
+    private List<BoneStats> bones = new List<BoneStats>();
 
+    private Transform root;
     private Transform lookAt = null;
     private Quaternion rotation = Quaternion.identity;
     private CharacterState state = CharacterState.None;
 
     private bool move = false;
+    private float currentSpeed;
+
     private Vector3 lastPosition;
+
+    private Coroutine fallCoroutine = null;
+    private Outline outline;
     #endregion
     #region Awake - Start
     private void Awake()
     {
-        mAnimator = GetComponentInChildren<Animator>();
+        mAnimator = GetComponentInChildren<Animator>(); root = mAnimator.transform.GetChild(0).transform;
         mCollider = GetComponent<Collider>();
         mRigidbody = GetComponent<Rigidbody>();
+        outline = GetComponentInChildren<Outline>();
         ragdollRB = GetComponentsInChildren<Rigidbody>().Where(x => x.gameObject != gameObject).ToList();
     }
     private void Start()
@@ -40,9 +48,25 @@ public class PlayerController : MonoBehaviour
             go.transform.localPosition = go.transform.localEulerAngles = Vector3.zero;
             lookAt = go.transform;
         }
+        
         foreach (Rigidbody rb in ragdollRB) { rb.isKinematic = true; rb.velocity = Vector3.zero; rb.gameObject.layer = 9; }
-        LevelManager.instance.startEvent.AddListener(() => move = true);
+        for(int i = 0; i < ragdollRB.Count; i++) 
+        {
+            BoneStats stat = new BoneStats();
+            stat.localEulerAngles = ragdollRB[i].transform.localEulerAngles;
+            stat.localPosition = ragdollRB[i].transform.localPosition;
+            bones.Add(stat);
+        }
+
+        LevelManager.instance.startEvent.AddListener(() => 
+        {
+            move = true;
+            outline.enabled = true;
+        });
+
         state = CharacterState.Idle;
+        outline.enabled = false;
+
     }
     #endregion
     #region Update - FixedUpdate - Collision - Phyics
@@ -59,11 +83,27 @@ public class PlayerController : MonoBehaviour
         if(collision.gameObject.CompareTag("Obstacle"))
         {
             EnableRagdoll();
+            state = CharacterState.Falling;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Boundary"))
+        {
+            EnableRagdoll();
+            state = CharacterState.Falling;
         }
     }
     private void Movement()
     {
-        if (!move) return;
+        if (!move) 
+        {
+            if(state == CharacterState.Falling)
+            {
+                if (fallCoroutine == null) { fallCoroutine = StartCoroutine(FallCoroutine()); outline.enabled = false; }
+            }
+            return;
+        }
 
         if (hold)
         {
@@ -71,11 +111,13 @@ public class PlayerController : MonoBehaviour
             {
                 mAnimator.SetTrigger("Run");
                 mRigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; state = CharacterState.Running;
+                outline.enabled = true;
             }
-
-            float speed = (lastPosition - transform.position).magnitude * 10;
+            currentSpeed = (lastPosition - transform.position).magnitude * 10;
             lastPosition = transform.position;
-            mAnimator.SetFloat("Speed", 0.5f + (speed/2));
+
+            mAnimator.SetFloat("Speed", runSpeed /5 + (currentSpeed / 2));
+            
             var lookPos = lookAt.position - transform.position;
             lookPos.y = 0;
             rotation = Quaternion.LookRotation(lookPos);
@@ -96,18 +138,60 @@ public class PlayerController : MonoBehaviour
     }
     private void DisableRagdoll()
     {
+        state = CharacterState.None;
         foreach(Rigidbody rb in ragdollRB) { rb.isKinematic = true; rb.velocity = Vector3.zero; }
+        FixBones();
         mAnimator.enabled = true;
+        mRigidbody.isKinematic = mCollider.isTrigger = false;
         move = true;
     }
     private void EnableRagdoll()
     {
         mAnimator.enabled = false;
+        mRigidbody.isKinematic = mCollider.isTrigger = true;
         foreach (Rigidbody rb in ragdollRB) { rb.isKinematic = false; }
         move = false;
     }
+    private void FixBones()
+    {
+        for(int i = 0; i < ragdollRB.Count; i++)
+        {
+            ragdollRB[i].transform.localPosition = bones[i].localPosition;
+            ragdollRB[i].transform.localEulerAngles = bones[i].localEulerAngles;
+        }
+    }
+    private void ReSpawn()
+    {
+        Transform point = Level.instance.GetSpawnPoint(transform.position);
+        transform.position = point.position;
+        transform.rotation = point.rotation;
+
+        DisableRagdoll();
+    }
     #endregion
     #region Input - Enum - Coroutine
+    [System.Serializable]
+    public class BoneStats
+    {
+        public Vector3 localPosition;
+        public Vector3 localEulerAngles;
+    }
+    [System.Serializable] 
+    public enum CharacterState
+    {
+        Running,
+        Idle,
+        Falling,
+        None
+    }
+    private IEnumerator FallCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+
+        ReSpawn();
+
+        fallCoroutine = null;
+    }
 
     [HideInInspector] public UnityEvent tap = new UnityEvent();
 
@@ -166,15 +250,6 @@ public class PlayerController : MonoBehaviour
             deltaX = deltaY = x = y = 0;
             startPos = Vector2.zero;
         }
-    }
-
-    [System.Serializable] 
-    public enum CharacterState
-    {
-        Running,
-        Idle,
-        Falling,
-        None
     }
     #endregion
 }
