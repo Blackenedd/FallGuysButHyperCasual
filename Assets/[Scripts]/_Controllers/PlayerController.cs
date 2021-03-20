@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
             lookAt = go.transform;
         }
         
-        foreach (Rigidbody rb in ragdollRB) { rb.isKinematic = true; rb.velocity = Vector3.zero; rb.gameObject.layer = 9; }
+        foreach (Rigidbody rb in ragdollRB) { rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; rb.isKinematic = true; rb.velocity = Vector3.zero; rb.gameObject.layer = 9; }
         for(int i = 0; i < ragdollRB.Count; i++) 
         {
             BoneStats stat = new BoneStats();
