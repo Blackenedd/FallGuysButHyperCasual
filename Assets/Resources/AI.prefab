@@ -1197,6 +1197,7 @@ GameObject:
   - component: {fileID: 7803174342049744171}
   - component: {fileID: 7803174342049744181}
   - component: {fileID: 7803174342049744170}
+  - component: {fileID: 6998389833831763119}
   m_Layer: 0
   m_Name: spine.001
   m_TagString: Untagged
@@ -1293,6 +1294,18 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &6998389833831763119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7803174342049744180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d093f1cb98442947b6eb981d9b66864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7948484700783648221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1620,7 +1633,7 @@ SkinnedMeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: a035f9f8d06cc044fa480131690b4500, type: 2}
-  - {fileID: 9171952328373019990, guid: d481154a59f08574abbba1dd93aec462, type: 3}
+  - {fileID: 2100000, guid: 6091cb6c0db995b49a68c2a612236222, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

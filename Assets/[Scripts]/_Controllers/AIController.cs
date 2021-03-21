@@ -163,6 +163,9 @@ public class AIController : MonoBehaviour
         transform.position = point.position;
         transform.rotation = point.rotation;
 
+        Transform pt = Instantiate(Resources.Load<GameObject>("particles/buff"), transform).transform;
+        pt.position = transform.position;
+
         GetLookAt();
 
         DisableRagdoll();
