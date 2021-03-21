@@ -105,7 +105,9 @@ public class PlayerController : MonoBehaviour
             CameraController.instance.SetValues(-7.5f,0, 0);
             mAnimator.SetTrigger("Dance");
             move = false;
-            state = CharacterState.None;
+            state = CharacterState.Painting;
+
+            UIManager.instance.gamePanel.AppaearSlider();
         }
     }
     private void Movement()
@@ -116,9 +118,14 @@ public class PlayerController : MonoBehaviour
             {
                 if (fallCoroutine == null) { fallCoroutine = StartCoroutine(FallCoroutine()); outline.enabled = false; }
             }
+            else if (state == CharacterState.Painting)
+            {
+                float paintRate = Level.instance.paintableWall.GetComponent<PaintArea>().paintRate;
+                UIManager.instance.gamePanel.processSlider.value = paintRate;
+                UIManager.instance.gamePanel.processText.text = (paintRate * 100).ToString("00") + "%";
+            }
             return;
         }
-
         if (hold)
         {
             if (state != CharacterState.Running)
@@ -196,6 +203,7 @@ public class PlayerController : MonoBehaviour
         Running,
         Idle,
         Falling,
+        Painting,
         None
     }
     private IEnumerator FallCoroutine()
