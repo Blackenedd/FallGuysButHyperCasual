@@ -78,8 +78,9 @@ public class AIController : MonoBehaviour
         }
         if (other.CompareTag("Finish") && move)
         {
-            mAnimator.SetTrigger("Dance");
             move = false;
+            Level.instance.finishedPlayers++;
+            mAnimator.SetTrigger("Dance");
             StartCoroutine(Delay(1.5f,() => 
             {
                 transform.GetChild(0).gameObject.SetActive(false);

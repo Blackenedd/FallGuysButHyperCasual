@@ -19,7 +19,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        Instantiate(Resources.Load<GameObject>("levels/level-" + GameManager.instance.level));
+        Instantiate(Resources.Load<GameObject>("levels/level-1"));
     }
     public void StartGame()
     {

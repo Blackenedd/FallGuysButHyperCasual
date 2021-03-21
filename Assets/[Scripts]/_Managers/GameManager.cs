@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
         {
             DestroyImmediate(this);
         }
+
+        Application.targetFrameRate = 60;
     }
     #endregion
 

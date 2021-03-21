@@ -24,6 +24,8 @@ public class Level : MonoBehaviour
 
     private bool start = false;
     private bool finish = false;
+
+    public int finishedPlayers = 0;
     private void Awake()
     {
         if (instance == null) instance = this;
@@ -48,10 +50,12 @@ public class Level : MonoBehaviour
     }
     private void LateUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
+
         if (!start || finish) return;
 
         if(winner == null) { winner = player; }
-        
+
         float closestDistance = Mathf.Abs(winner.position.z - paintableWall.position.z);
         float playerDistance = Mathf.Abs(player.position.z - paintableWall.position.z);
         int currentPlacement = 1;
@@ -71,6 +75,8 @@ public class Level : MonoBehaviour
         winner = closestDistance > playerDistance ? player : (temp == null ? winner : temp);
 
         UIManager.instance.gamePanel.placementText.text = currentPlacement.ToString();
+
+        if (finishedPlayers > 0) { crown.gameObject.SetActive(false); return; }
 
         if (crown.target == null || crown.target != winner)
         {
