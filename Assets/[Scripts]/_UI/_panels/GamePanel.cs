@@ -8,6 +8,7 @@ public class GamePanel : Panel
 {
     public Slider processSlider;
     public Text processText;
+    public Text placementText;
 
     public void AppaearSlider()
     {

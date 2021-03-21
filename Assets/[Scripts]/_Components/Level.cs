@@ -53,6 +53,8 @@ public class Level : MonoBehaviour
         if(winner == null) { winner = player; }
         
         float closestDistance = Mathf.Abs(winner.position.z - paintableWall.position.z);
+        float playerDistance = Mathf.Abs(player.position.z - paintableWall.position.z);
+        int currentPlacement = 1;
 
         Transform temp = null;
         foreach (Transform tr in AIs)
@@ -63,9 +65,12 @@ public class Level : MonoBehaviour
                 temp = tr;
                 closestDistance = currentDistance;
             }
+            if (currentDistance < playerDistance) currentPlacement++;
         }
 
-        winner = closestDistance > Mathf.Abs(player.position.z - paintableWall.position.z) ? player : (temp == null ? winner : temp);
+        winner = closestDistance > playerDistance ? player : (temp == null ? winner : temp);
+
+        UIManager.instance.gamePanel.placementText.text = currentPlacement.ToString();
 
         if (crown.target == null || crown.target != winner)
         {

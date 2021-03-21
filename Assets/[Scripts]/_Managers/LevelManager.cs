@@ -8,6 +8,7 @@ public class LevelManager : MonoBehaviour
     [HideInInspector] public UnityEvent startEvent = new UnityEvent();
     [HideInInspector] public EndGameEvent endGameEvent = new EndGameEvent();
 
+
     #region Singleton
     public static LevelManager instance = null;
     private void Awake()
@@ -18,7 +19,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        // Instantiate(Resources.Load<GameObject>("levels/level-" + GameManager.instance.level));
+        Instantiate(Resources.Load<GameObject>("levels/level-" + GameManager.instance.level));
     }
     public void StartGame()
     {
