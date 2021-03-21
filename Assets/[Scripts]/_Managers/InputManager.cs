@@ -8,10 +8,15 @@ using DG.Tweening;
 [RequireComponent(typeof(NonDrawingGraphic))]
 public class InputManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    public LayerMask layerMask;
     public PointerEventData eventData;
     public bool useCursor = true;
 
     private RectTransform cursor;
+
+    [HideInInspector] public LayerMask defaultLayerMask;
+    [HideInInspector] public Vector2 defaultOffset;
+
     #region Singleton
     public static InputManager instance = null;
     private void Awake()
@@ -22,59 +27,61 @@ public class InputManager : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     private void Start()
     {
+        defaultLayerMask = layerMask;
+        defaultOffset = rayOffset;
         cursor = transform.GetChild(0).GetComponent<RectTransform>();
         cursor.localScale = Vector3.zero;
     }
-    // WARNING!!!
-    // comment this block and uncomment neccessary block first
-    // ********************************************************
-    // ********************************************************
-    public void OnPointerDown(PointerEventData _eventData) { }
-    public void OnPointerUp(PointerEventData _eventData) { }
-    // ********************************************************
-    // ********************************************************
-    // END_OF_WARNING!!
+    //// WARNING!!!
+    //// comment this block and uncomment neccessary block first
+    //// ********************************************************
+    //// ********************************************************
+    //public void OnPointerDown(PointerEventData _eventData) { }
+    //public void OnPointerUp(PointerEventData _eventData) { }
+    //// ********************************************************
+    //// ********************************************************
+    //// END_OF_WARNING!!
 
     #region RaycastFromTouchPoint
     // if we need send raycast from tap point on screen, uncomment this block
-    // public void OnPointerDown(PointerEventData _eventData)
-    // {
-    //     eventData = _eventData;
-    //     if (useCursor) cursor.DOScale(1f, 0.25f);
-    // }
+    public void OnPointerDown(PointerEventData _eventData)
+    {
+        eventData = _eventData;
+        if (useCursor) cursor.DOScale(1f, 0.25f);
+    }
 
-    // public void OnPointerUp(PointerEventData _eventData)
-    // {
-    //     eventData = null;
-    //     if (useCursor) cursor.DOScale(0f, 0.25f);
-    // }
+    public void OnPointerUp(PointerEventData _eventData)
+    {
+        eventData = null;
+        if (useCursor) cursor.DOScale(0f, 0.25f);
+    }
 
-    // private void Update()
-    // {
-    //     if (!useCursor || eventData == null) return;
-    //     cursor.position = eventData.position + _rayOffset;
-    // }
+    private void Update()
+    {
+        if (!useCursor || eventData == null) return;
+        cursor.position = eventData.position + _rayOffset;
+    }
 
-    // public RaycastHit hit;
-    // public Vector2 rayOffset = new Vector2(0, 100); //change this if need to offset
-    // private Vector2 _rayOffset
-    // {
-    //     get
-    //     {
-    //         return new Vector2(rayOffset.x, rayOffset.y *  )
-    //     }
-    // }
-    // private void FixedUpdate()
-    // {
-    //     if (eventData == null) return;
+    public RaycastHit hit;
+    public Vector2 rayOffset = new Vector2(0, 100); //change this if need to offset
+    private Vector2 _rayOffset
+    {
+        get
+        {
+            return new Vector2(rayOffset.x, rayOffset.y);
+        }
+    }
+    private void FixedUpdate()
+    {
+        if (eventData == null) return;
 
-    //     Ray ray;
+        Ray ray;
 
-    //     if (useCursor) ray = CameraController.instance.cam.ScreenPointToRay(cursor.position);
-    //     else ray = CameraController.instance.cam.ScreenPointToRay(eventData.position + rayOffset);
+        if (useCursor) ray = CameraController.instance.cam.ScreenPointToRay(cursor.position);
+        else ray = CameraController.instance.cam.ScreenPointToRay(eventData.position + rayOffset);
 
-    //     Physics.Raycast(ray, out hit);
-    // }
+        Physics.Raycast(ray, out hit, 100f, layerMask);
+    }
     #endregion
 
     #region ContinousInput

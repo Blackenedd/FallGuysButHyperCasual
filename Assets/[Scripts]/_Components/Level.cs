@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Level : MonoBehaviour
 {
+    public Transform paintableWall;
     [SerializeField] private Transform spawnPointContainer;
-
     private List<Transform> spawnPositions = new List<Transform>();
 
     public static Level instance = null;

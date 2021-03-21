@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Animator mAnimator;
     private Collider mCollider;
     private Rigidbody mRigidbody;
+    private Painter mPainter;
 
     private List<Rigidbody> ragdollRB = new List<Rigidbody>();
     private List<BoneStats> bones = new List<BoneStats>();
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         mAnimator = GetComponentInChildren<Animator>(); root = mAnimator.transform.GetChild(0).transform;
+        mPainter = GetComponent<Painter>();
         mCollider = GetComponent<Collider>();
         mRigidbody = GetComponent<Rigidbody>();
         outline = GetComponentInChildren<Outline>();
@@ -66,6 +68,7 @@ public class PlayerController : MonoBehaviour
 
         state = CharacterState.Idle;
         outline.enabled = false;
+        mPainter.enabled = false;
 
     }
     #endregion
@@ -92,6 +95,17 @@ public class PlayerController : MonoBehaviour
         {
             EnableRagdoll();
             state = CharacterState.Falling;
+        }
+        if(other.CompareTag("Finish"))
+        {
+            mPainter.enabled = true;
+            CameraController.instance.SetTarget(Level.instance.paintableWall,Level.instance.paintableWall);
+            CameraController.instance.SetSmooths(1, 1);
+            CameraController.instance.SetOffset(Vector3.zero);
+            CameraController.instance.SetValues(-7.5f,0, 0);
+            mAnimator.SetTrigger("Dance");
+            move = false;
+            state = CharacterState.None;
         }
     }
     private void Movement()
