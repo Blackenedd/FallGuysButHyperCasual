@@ -93,7 +93,7 @@ Material:
     - _SurfaceFoamShadowProjection: 15
     - _UnderwaterRefractionStrength: 0.099
     - _WaterColorDepth: 0.8
-    - _WaterColorHorizonDistance: 20
+    - _WaterColorHorizonDistance: 15
     m_Colors:
     - _IntersectionFoamColor: {r: 1, g: 1, b: 1, a: 1}
     - _IntersectionFoamMovement: {r: 0, g: 0.05, b: 0, a: 0}
@@ -108,7 +108,7 @@ Material:
     - _SurfaceFoamSampling: {r: 0.634, g: 3, b: 0, a: 0}
     - _SurfaceFoamTilingAndOffset: {r: -1, g: -1, b: 0.226, a: 0.163}
     - _WaterColorDeep: {r: 0.47450984, g: 0.59546053, b: 1, a: 1}
-    - _WaterColorHorizon: {r: 0.36320752, g: 0.5684184, b: 1, a: 1}
+    - _WaterColorHorizon: {r: 0, g: 0.87192106, b: 1, a: 1}
     - _WaterColorShallow: {r: 1, g: 0, b: 0.8839598, a: 0.5019608}
     - _WaterColorUnderwater: {r: 0.20389047, g: 0.30977106, b: 0.517647, a: 1}
     - _WaveColor: {r: 0, g: 0, b: 0, a: 0}

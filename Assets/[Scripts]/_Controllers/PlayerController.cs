@@ -123,6 +123,21 @@ public class PlayerController : MonoBehaviour
                 float paintRate = Level.instance.paintableWall.GetComponent<PaintArea>().paintRate;
                 UIManager.instance.gamePanel.processSlider.value = paintRate;
                 UIManager.instance.gamePanel.processText.text = (paintRate * 100).ToString("00") + "%";
+
+                if (paintRate * 100 == 100)
+                {
+                    mPainter.enabled = false;
+
+                    CameraController.instance.SetTarget(transform, transform);
+                    CameraController.instance.SetValues(-15, 10, 0);
+                    CameraController.instance.rotateAnimation = true;
+
+                    LevelManager.instance.Success();
+
+                    state = CharacterState.None;
+
+                    UIManager.instance.gamePanel.processText.text = 100 + "%";
+                }
             }
             return;
         }
@@ -137,7 +152,7 @@ public class PlayerController : MonoBehaviour
             currentSpeed = (lastPosition - transform.position).magnitude * 10;
             lastPosition = transform.position;
 
-            mAnimator.SetFloat("Speed", runSpeed /5 + (currentSpeed / 2));
+            mAnimator.SetFloat("Speed", runSpeed /7.5f + (currentSpeed));
             
             var lookPos = lookAt.position - transform.position;
             lookPos.y = 0;
