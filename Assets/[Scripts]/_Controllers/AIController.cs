@@ -76,10 +76,17 @@ public class AIController : MonoBehaviour
             EnableRagdoll();
             state = PlayerController.CharacterState.Falling;
         }
-        if (other.CompareTag("Finish"))
+        if (other.CompareTag("Finish") && move)
         {
             mAnimator.SetTrigger("Dance");
             move = false;
+            StartCoroutine(Delay(1.5f,() => 
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+                mCollider.isTrigger = mRigidbody.isKinematic = true;
+                Transform pt = Instantiate(Resources.Load<GameObject>("particles/buff"), transform).transform;
+                pt.position = transform.position;
+            }));
         }
     }
     private void Movement()
@@ -169,10 +176,17 @@ public class AIController : MonoBehaviour
         GetLookAt();
 
         DisableRagdoll();
+
+        StartCoroutine(ReSpawnCoroutine());
     }
     private void GetLookAt()
     {
         lookAt = Level.instance.GetAITarget(transform.position);
+    }
+    private IEnumerator Delay(float _waitTime = 1f,UnityAction onComplete = null)
+    {
+        yield return new WaitForSeconds(_waitTime);
+        onComplete?.Invoke();
     }
     private IEnumerator FallCoroutine()
     {
@@ -181,5 +195,11 @@ public class AIController : MonoBehaviour
         ReSpawn();
 
         fallCoroutine = null;
+    }
+    private IEnumerator ReSpawnCoroutine()
+    {
+        gameObject.layer = 13;
+        yield return new WaitForSeconds(1f);
+        gameObject.layer = 10;
     }
 }

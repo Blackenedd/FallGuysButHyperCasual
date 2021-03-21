@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 5
-  turnSpeed: 5
+  turnSpeed: 7.5
   lookAt: {fileID: 0}
 --- !u!1 &1758268857469507241
 GameObject:

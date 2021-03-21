@@ -1226,7 +1226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runSpeed: 5
-  turnSpeed: 10
+  turnSpeed: 6
   tap:
     m_PersistentCalls:
       m_Calls: []

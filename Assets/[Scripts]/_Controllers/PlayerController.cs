@@ -131,6 +131,7 @@ public class PlayerController : MonoBehaviour
                     CameraController.instance.SetTarget(transform, transform);
                     CameraController.instance.SetValues(-15, 10, 0);
                     CameraController.instance.rotateAnimation = true;
+                    CameraController.instance.PlayConfetti();
 
                     LevelManager.instance.Success();
 
